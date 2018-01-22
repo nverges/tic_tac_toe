@@ -2,7 +2,7 @@
 
 > Tic Tac Toe using Vue
 
-'npm run dev'
+'npm run dev' will start a hot-reloading server on localhost:8080
 
 -----------------
 Instructions!
@@ -33,15 +33,15 @@ BONUS:
 - Load app with empty board
 - Player 1 (P1) places an 'X'
 - After P1 chooses, (P2) places an 'O'
---- Run 'checkIfWin' method after each turn to determine if a winning condition is met
-- Repeat P1 turn
-
---- If all moves have been made, and no winning condition has been met, game is a draw
+- *Run 'checkIfWin' method after each turn to determine if a winning condition is met*
+- Repeat P1 turn until winCondition = true
+- If all moves have been made, and no winning condition has been met, game is a draw
 - Increase winCounter++ to appropriate Player
+- If draw, increase draw++ counter
 - Increase total rounds++ counter
-
 
 
 ** Future Additions **
 - Allow user to select his/her own marker (X or O)
 - Create AI functionality to play against a computer
+- Make it fancy!

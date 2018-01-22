@@ -39,12 +39,14 @@
                 // Initialize game with '0' rounds played
                 rounds: 0,
 
-                // Initialize all counters to '0'
+                // Initialize all win counters to '0'
                 winCounter: {
                     x: 0,
                     o: 0,
                     draw: 0
-                }
+                },
+
+                moves: 0
             }
         },
 
@@ -56,7 +58,13 @@
 
             resetCounters() {
                 Event.$on(console.log('Reset Counters Click Handler'))
-            }
+            },
+
+            incrementMoves() {
+                this.moves++;
+                console.log(moves);
+            },
+
         }
     }
 </script>
