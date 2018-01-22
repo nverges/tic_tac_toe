@@ -1,60 +1,80 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+      
+      <div id='game'>
+        <h2>Tic Tac Toe!</h2>
+      </div>
+      
+      <!-- Render Board component -->
+      <Board></Board>
+
+      <div class='score-info'>
+        <p>Total Rounds Played: <span id='rounds-counter'> {{ rounds }}</span></p>
+        <p>Player 1 Wins: <span id='p1-wins'>{{ winCounter.x }}</span></p>
+        <p>Player 2 Wins: <span id='p2-wins'>{{ winCounter.o }}</span></p>
+        <p>Draw Counter: <span id='draw-counter'>{{ winCounter.draw }}</span></p>
+      </div>
+
+      <button id='reset-game' @click='resetGame'>Reset Game</button>
+      <button id='reset-counters' @click='resetCounters'>Reset Score Counters</button>
+      
   </div>
 </template>
 
 <script>
-export default {
-  name: 'app',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+    // Require the Board component into App component
+    import Board from './components/Board.vue'
+
+    // I only want the parent element to hold counter data and Reset button functionality //
+    export default {
+        // Register components
+        components: {
+            Board
+        },
+        // Declares entry into 'app' div
+        name: 'app',
+        data() {
+            return {
+
+                // Initialize game with '0' rounds played
+                rounds: 0,
+
+                // Initialize all counters to '0'
+                winCounter: {
+                    x: 0,
+                    o: 0,
+                    draw: 0
+                }
+            }
+        },
+
+        // Logic
+        methods: {
+            resetGame() {
+                Event.$on(console.log('Reset Game Click Handler'))
+            },
+
+            resetCounters() {
+                Event.$on(console.log('Reset Counters Click Handler'))
+            }
+        }
     }
-  }
-}
 </script>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
+<style>
+    #app {
+        margin: 0 auto;
+        color: #f3f3f3;
+    }
+    
+    body {
+        background-color: rgb(65, 65, 65);
+        text-align: center;
+        margin: 10px;
+    }
+    
+    h2 {
+        font-weight: bold;
+        font-size: 28px;
+    }
 </style>
