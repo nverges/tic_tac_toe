@@ -10,9 +10,9 @@
 
       <div class='score-info'>
         <p>Total Rounds Played: <span id='rounds-counter'> {{ rounds }}</span></p>
-        <p>Player 1 Wins: <span id='p1-wins'>{{ winCounter.x }}</span></p>
-        <p>Player 2 Wins: <span id='p2-wins'>{{ winCounter.o }}</span></p>
-        <p>Draw Counter: <span id='draw-counter'>{{ winCounter.draw }}</span></p>
+        <p>Player 1 Wins: <span id='p1-wins'>{{ xWins }}</span></p>
+        <p>Player 2 Wins: <span id='p2-wins'>{{ oWins }}</span></p>
+        <p>Draw Counter: <span id='draw-counter'>{{ draw }}</span></p>
         <p>Moves Counter: <span id='moves-counter'>{{ moves }}</span></p>
       </div>
 
@@ -50,15 +50,27 @@
                     9: ''
                 },
 
+                winningConditions: [
+                    // Horizontal possibilities
+                    [1, 2, 3],
+                    [4, 5, 6],
+                    [7, 8, 9],
+                    // Vertical possibilities
+                    [1, 4, 7],
+                    [2, 5, 8],
+                    [3, 6, 9],
+                    // Diagonal possibilities
+                    [1, 5, 9],
+                    [3, 5, 7]
+                ],
+
                 // Initialize game with '0' rounds played
                 rounds: 0,
 
                 // Initialize all win counters to '0'
-                winCounter: {
-                    x: 0,
-                    o: 0,
-                    draw: 0
-                },
+                xWins: 0,
+                oWins: 0,
+                draw: 0,
 
                 // Total moves made
                 moves: 0,
@@ -70,6 +82,7 @@
             }
         },
 
+        // Listeners
         computed: {
             togglePlayer() {
                 if (this.currentPlayer === 'X') {
@@ -80,7 +93,6 @@
             }
         },
 
-
         // Logic
         methods: {
 
@@ -89,11 +101,10 @@
             },
 
             resetGame() {
-                Event.$on(console.log('Reset Game Click Handler'));
+                Event.$on(console.log('Reset Game'));
 
                 this.marker = '';
 
-                console.log(this.squares);
                 console.log('reset board firing');
 
                 // reset Moves
@@ -125,14 +136,45 @@
             incrementMoves() {
                 this.moves++;
                 console.log(`Number of Moves: ${this.moves}`);
+            },
+
+            incrementWin(currentPlayer) {
+                if (currentPlayer === 'X') {
+                    this.xWins++;
+                } else if (currentPlayer = 'O') {
+                    this.oWins++
+                }
+            },
+
+            checkIfWin(currentPlayer) {
+                for (let i = 0; i < this.winningConditions.length; i++) {
+                    var index1 = this.winningConditions[i][0]; //1
+                    var index2 = this.winningConditions[i][1]; //2
+                    var index3 = this.winningConditions[i][2]; //3
+
+                    var winningSpot1 = this.squares[index1] // x or o
+                    var winningSpot2 = this.squares[index2] // x or o
+                    var winningSpot3 = this.squares[index3] // x or o
+
+                    if (currentPlayer === winningSpot1 && currentPlayer === winningSpot2 && currentPlayer === winningSpot3) {
+                        setTimeout(() => {
+                            console.log('WIN')
+                            alert(`${currentPlayer} WINS!`)
+                            this.incrementWin(currentPlayer);
+                            this.resetMoves();
+                        }, 50);
+                    }
+
+                }
+
             }
         },
 
         created() {
             Event.$on('placeMarker', (square) => {
-                console.log(square);
-                console.log(this.squares);
-                console.log('asdfasdf:' + this.currentPlayer);
+                // console.log(square);
+                // console.log(this.squares);
+                // console.log('asdfasdf:' + this.currentPlayer);
 
                 // push X or O to squares array
                 this.squares[square] = this.currentPlayer;
@@ -140,10 +182,12 @@
                 // increment move counter
                 this.incrementMoves();
 
+                // check for a win
+                this.checkIfWin(this.currentPlayer);
+
                 // Change player
                 this.changePlayer();
 
-                console.log(this.squares);
             })
         }
 
