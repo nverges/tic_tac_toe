@@ -17,7 +17,7 @@
       </div>
 
       <button id='reset-game' @click='resetGame'>Reset Game</button>
-      <button id='reset-counters' @click='resetCounters'>Reset Score Counters</button>
+      <!-- <button id='reset-counters' @click='resetCounters'>Reset Score Counters</button> -->
       
   </div>
 </template>
@@ -103,15 +103,10 @@
             resetGame() {
                 Event.$on(console.log('Reset Game'));
 
-                this.marker = '';
+                this.currentPlayer = 'X';
 
                 console.log('reset board firing');
 
-                // reset Moves
-                this.resetMoves();
-            },
-
-            resetMoves() {
                 this.moves = 0;
                 this.squares = {
                     1: '',
@@ -124,14 +119,15 @@
                     8: '',
                     9: ''
                 }
-                this.currentPlayer = 'X';
             },
 
-            resetCounters() {
-                Event.$on(console.log('Reset Counters Click Handler'));
-                this.winCounter.x = 0;
-                this.winCounter.o = 0;
-            },
+
+
+            // resetCounters() {
+            //     Event.$on(console.log('Reset Counters Click Handler'));
+            //     this.winCounter.x = 0;
+            //     this.winCounter.o = 0;
+            // },
 
             incrementMoves() {
                 this.moves++;
@@ -146,7 +142,42 @@
                 }
             },
 
-            checkIfWin(currentPlayer) {
+            alertWin(currentPlayer) {
+                setTimeout(() => {
+                    console.log('WIN')
+                    alert(`${currentPlayer} WINS!`)
+                    this.incrementWin(currentPlayer);
+                    this.resetGame();
+                }, 50);
+            },
+
+            checkIfFull() {
+                var full = true;
+
+                if (this.squares[1] === '' ||
+                    this.squares[2] === '' ||
+                    this.squares[3] === '' ||
+                    this.squares[4] === '' ||
+                    this.squares[5] === '' ||
+                    this.squares[6] === '' ||
+                    this.squares[7] === '' ||
+                    this.squares[8] === '' ||
+                    this.squares[9] === '') {
+                    full = false;
+                }
+
+                // for (let i = 0; i < this.squares.length; i++) {
+                //     console.log(this.squares[i])
+                //     if (this.squares[i] === '') {
+                //         full = false;
+                //     }
+                // }
+                return full
+            },
+
+            didWin(currentPlayer) {
+                var won = false;
+
                 for (let i = 0; i < this.winningConditions.length; i++) {
                     var index1 = this.winningConditions[i][0]; //1
                     var index2 = this.winningConditions[i][1]; //2
@@ -157,24 +188,15 @@
                     var winningSpot3 = this.squares[index3] // x or o
 
                     if (currentPlayer === winningSpot1 && currentPlayer === winningSpot2 && currentPlayer === winningSpot3) {
-                        setTimeout(() => {
-                            console.log('WIN')
-                            alert(`${currentPlayer} WINS!`)
-                            this.incrementWin(currentPlayer);
-                            this.resetMoves();
-                        }, 50);
+                        won = true;
                     }
-
                 }
-
+                return won;
             }
         },
 
         created() {
             Event.$on('placeMarker', (square) => {
-                // console.log(square);
-                // console.log(this.squares);
-                // console.log('asdfasdf:' + this.currentPlayer);
 
                 // push X or O to squares array
                 this.squares[square] = this.currentPlayer;
@@ -183,11 +205,17 @@
                 this.incrementMoves();
 
                 // check for a win
-                this.checkIfWin(this.currentPlayer);
+                if (this.didWin(this.currentPlayer)) {
+                    this.alertWin(this.currentPlayer);
+                } else if (!this.didWin(this.currentPlayer) && this.checkIfFull()) {
+                    this.draw++
+                        console.log('draw');
+                    alert('draw');
+                    this.resetGame();
+                }
 
                 // Change player
                 this.changePlayer();
-
             })
         }
 
