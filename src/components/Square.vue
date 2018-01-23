@@ -1,7 +1,7 @@
 <template>
     
     <!-- Creates each individual cell -->
-    <td class="square" @click='choose'>
+    <td class="square" @click='placeMarker'>
 
         <!-- Will display an X or an O -->
         {{ marker }}
@@ -14,34 +14,37 @@
     export default {
 
         // Pass the name to the table element as props
-        props: ['number'],
+        props: ['number', 'marker'],
 
         data() {
             return {
 
                 // Variable to represent X or O on the Board
-                marker: ''
+                // marker: '',
+
             }
         },
 
         methods: {
 
             // click event to place a marker on a square
-            choose() {
+            placeMarker() {
 
-                // place an X or an O, depending on player
-                this.marker = this.$parent.playerTurn
+                if (this.marker === '') {
+                    // place an X or an O, depending on player
+                    // console.log(`Current Player: ${this.$parent.currentPlayer}`)
+                    // this.marker = this.$parent.currentPlayer
 
-                // adds a value to a square
-                Event.$emit('choose', this.number)
+                    // adds a value to a square
+                    Event.$emit('placeMarker', this.number)
 
-                // console logs
-                // check current player turn
-                console.log(this.$parent.playerTurn)
+                    // increment move counter
+                    // this.$parent.incrementMoveCounter();
 
-                // increment move counter
-                this.$parent.incrementMoveCounter();
+                    // logs
+                    console.log(`----------`)
 
+                }
             },
 
         }
