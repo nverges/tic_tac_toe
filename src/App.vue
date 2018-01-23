@@ -2,26 +2,28 @@
   <div id="app">
       
       <div id='game'>
-        <h2>Tic Tac Toe!</h2>
+        <h2>Tic-Tac-Toe!</h2>
       </div>
+      
+      <p>Total Rounds Played: <span id='rounds-counter'> {{ rounds }}</span></p>
+      <!-- <p>Current Player: <span>{{ currentPlayer }}</span></p> -->
       
       <!-- Render Board component -->
       <Board :squares='squares'></Board>
 
       <div class='score-info'>
-        <p>Total Rounds Played: <span id='rounds-counter'> {{ rounds }}</span></p>
-        <p>Player 1 Wins: <span id='p1-wins'>{{ xWins }}</span></p>
-        <p>Player 2 Wins: <span id='p2-wins'>{{ oWins }}</span></p>
-        <p>Draw Counter: <span id='draw-counter'>{{ draw }}</span></p>
-        <p>Moves Counter: <span id='moves-counter'>{{ moves }}</span></p>
+        <div></div>
+        <p>'X' Wins: <span id='p1-wins'>{{ xWins }}</span></p>
+        <p>'O' Wins: <span id='p2-wins'>{{ oWins }}</span></p>
+        <p>Ties: <span id='tie-counter'>{{ tie }}</span></p>
       </div>
 
-      <button id='reset-game' @click='resetGame'>Reset Game</button>
-      <!-- <button id='reset-counters' @click='resetCounters'>Reset Score Counters</button> -->
+      <button id='start-over' @click='startOver'>Start Over</button>
       
   </div>
 </template>
 
+<!-- This component holds all state info -->
 <script>
     // Require the Board component into App component
     import Board from './components/Board.vue'
@@ -35,6 +37,8 @@
         },
         // Declares entry into 'app' div
         name: 'app',
+
+        // Initialize state
         data() {
             return {
 
@@ -70,20 +74,20 @@
                 // Initialize all win counters to '0'
                 xWins: 0,
                 oWins: 0,
-                draw: 0,
-
-                // Total moves made
-                moves: 0,
+                tie: 0,
 
                 // Total games played
                 gamesPlayed: 0,
 
+                // Initialize Player 1 to 'X'
                 currentPlayer: 'X',
             }
         },
 
         // Listeners
         computed: {
+
+            // Listens for the state of 'currentPlayer' and returns a value 'X' or 'O'
             togglePlayer() {
                 if (this.currentPlayer === 'X') {
                     return 'O';
@@ -96,18 +100,19 @@
         // Logic
         methods: {
 
+            // uses togglePlayer() listener to switch between markers
             changePlayer() {
                 this.currentPlayer = this.togglePlayer;
             },
 
-            resetGame() {
+            // Reset Round
+            resetRound() {
                 Event.$on(console.log('Reset Game'));
 
+                // Resets player1 value to 'X'
                 this.currentPlayer = 'X';
 
-                console.log('reset board firing');
-
-                this.moves = 0;
+                // Resets squares to empty
                 this.squares = {
                     1: '',
                     2: '',
@@ -121,19 +126,16 @@
                 }
             },
 
-
-
-            // resetCounters() {
-            //     Event.$on(console.log('Reset Counters Click Handler'));
-            //     this.winCounter.x = 0;
-            //     this.winCounter.o = 0;
-            // },
-
-            incrementMoves() {
-                this.moves++;
-                console.log(`Number of Moves: ${this.moves}`);
+            // Resets Score Counters
+            startOver() {
+                this.rounds = 0;
+                this.xWins = 0;
+                this.oWins = 0;
+                this.tie = 0;
+                this.resetRound();
             },
 
+            // Increases win counter
             incrementWin(currentPlayer) {
                 if (currentPlayer === 'X') {
                     this.xWins++;
@@ -142,18 +144,29 @@
                 }
             },
 
+            // Alerts user of Win
             alertWin(currentPlayer) {
                 setTimeout(() => {
-                    console.log('WIN')
                     alert(`${currentPlayer} WINS!`)
+
+                    // Increase Win Counter
                     this.incrementWin(currentPlayer);
-                    this.resetGame();
+
+                    // Reset Game
+                    this.resetRound();
+
+                    // Increase total rounds played
+                    this.rounds++;
+
                 }, 50);
             },
 
+            // Helper to check if the 'squares' object is full
             checkIfFull() {
+
                 var full = true;
 
+                // Refactor into a loop
                 if (this.squares[1] === '' ||
                     this.squares[2] === '' ||
                     this.squares[3] === '' ||
@@ -166,52 +179,69 @@
                     full = false;
                 }
 
-                // for (let i = 0; i < this.squares.length; i++) {
-                //     console.log(this.squares[i])
-                //     if (this.squares[i] === '') {
-                //         full = false;
-                //     }
-                // }
+                // true by default
                 return full
             },
 
+            // Confirmed Win
             didWin(currentPlayer) {
+
+                // Initialize 'won' to false
                 var won = false;
 
+                // Loops through array of winning conditions
                 for (let i = 0; i < this.winningConditions.length; i++) {
+
+                    // grab index of each winning condition array
                     var index1 = this.winningConditions[i][0]; //1
                     var index2 = this.winningConditions[i][1]; //2
                     var index3 = this.winningConditions[i][2]; //3
 
+                    // push winning condition into squares object
                     var winningSpot1 = this.squares[index1] // x or o
                     var winningSpot2 = this.squares[index2] // x or o
                     var winningSpot3 = this.squares[index3] // x or o
 
+                    // if 3 values meet a winning condition....
                     if (currentPlayer === winningSpot1 && currentPlayer === winningSpot2 && currentPlayer === winningSpot3) {
+
+                        // then WIN!
                         won = true;
                     }
                 }
+
+                // false by default
                 return won;
             }
         },
 
+        // Watcher function
         created() {
             Event.$on('placeMarker', (square) => {
 
                 // push X or O to squares array
                 this.squares[square] = this.currentPlayer;
 
-                // increment move counter
-                this.incrementMoves();
-
                 // check for a win
                 if (this.didWin(this.currentPlayer)) {
+
+                    // winner alert
                     this.alertWin(this.currentPlayer);
+
+                    // if there is no winner, and the 'squares' object is full...
                 } else if (!this.didWin(this.currentPlayer) && this.checkIfFull()) {
-                    this.draw++
-                        console.log('draw');
-                    alert('draw');
-                    this.resetGame();
+
+                    // increment tie counter
+                    this.tie++
+
+                        // increment rounds counter
+                        this.rounds++
+
+                        // alert
+                        alert('Tie! Play again for victory.');
+
+                    // reset board
+                    this.resetRound();
                 }
 
                 // Change player
@@ -225,17 +255,39 @@
 <style>
     #app {
         margin: 0 auto;
-        color: #f3f3f3;
+        color: black;
     }
     
     body {
-        background-color: rgb(65, 65, 65);
+        /* font-family: 'Indie Flower', cursive; */
+        font-family: 'Gloria Hallelujah';
+        background-color: #d8c3a5;
         text-align: center;
         margin: 10px;
     }
     
+    p {
+        font-size: 24px;
+    }
+    
     h2 {
         font-weight: bold;
-        font-size: 28px;
+        font-size: 48px;
+    }
+    
+    button {
+        padding: 15px 20px;
+        font-size: 24px;
+        border-radius: 8px;
+    }
+    
+    button:hover {
+        cursor: pointer;
+        background: #e98074
+    }
+    
+    span {
+        color: #e98074;
+        font-weight: bold;
     }
 </style>

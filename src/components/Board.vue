@@ -20,99 +20,27 @@
 
 </template>
 
-
+<!-- This component holds the layout of the board -->
 <script>
     // Require child component
     import Square from './Square.vue'
 
     export default {
 
+        // props
         props: ['squares'],
 
-        // Register components
+        // Register child components
         components: {
             Square
         },
 
+        // Stateless
         data() {
             return {
 
-                // Set value of each square to an empty string. Will be replaced with an X or an O
-
-                // Need an array to hold the possible square combinations to meet a winning condition
-                winningConditions: [
-                    // Horizontal possibilities
-                    [1, 2, 3],
-                    [4, 5, 6],
-                    [7, 8, 9],
-                    // Vertical possibilities
-                    [1, 4, 7],
-                    [2, 5, 8],
-                    [3, 6, 9],
-                    // Diagonal possibilities
-                    [1, 5, 9],
-                    [3, 5, 7]
-                ],
-
-                // Initialize starting player - X
-                currentPlayer: 'X',
-
-                // Declare gameStatus - move, win, or tie
-                // gameStatus: 'move',
-
-                // Counter to determine what # move it is. 9 Possible moves per game.
-                moves: 0,
-
-                // Counter to display win, loss, or tie is present in 'App' Component
-
             }
-        },
-
-        computed: {
-            togglePlayer() {
-                if (this.currentPlayer === 'X') {
-                    return 'O';
-                } else {
-                    return 'X';
-                }
-            }
-        },
-
-        methods: {
-
-            changePlayer() {
-
-                this.currentPlayer = this.togglePlayer;
-            },
-
-            // listen for click
-
-            // Alternate player
-
-            // Check for a winning condition
-
-            // Push value of click to 'squares' array, respective to player
-
-            // clear squares
-
-        },
-
-        // need an on click event bus handler to listen for a move from the square component
-        // created() {changepla
-        //     Event.$on('placeMarker', (square) => {
-
-        //         // push X or O to squares array
-        //         this.squares[square] = this.currentPlayer;
-
-        //         // increment move counter
-        //         this.$parent.incrementMoves();
-
-        //         // Change player
-        //         this.changePlayer();
-
-        //         console.log(this.squares);
-        //     })
-        // }
+        }
 
     }
 </script>
@@ -125,6 +53,7 @@
     }
     
     .square:hover {
-        background-color: yellow;
+        /* background-color: yellow; */
+        cursor: pointer;
     }
 </style>

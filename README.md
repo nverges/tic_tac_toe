@@ -11,7 +11,7 @@ Instructions!
 - After an 'X' is placed, clicking on an empty space should place an 'O' and continue to alternate between 'X' and 'O'
 
 BONUS:
-- If 3 X's or O's are in a row vertically or diagonally (directions do not specify horizontally), a toastr message will pop up letting player 1 (x's) or player 2 (o's) know they won.
+- If 3 X's or O's are in a row vertically or diagonally, a toastr message will pop up letting player 1 (x's) or player 2 (o's) know they won.
 ---------------------
 
 
