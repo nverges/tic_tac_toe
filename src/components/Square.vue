@@ -13,7 +13,7 @@
 <script>
     export default {
 
-        // Pass the name to the table element as props
+        // Declare props
         props: ['number', 'marker'],
 
         // Stateless
@@ -33,6 +33,7 @@
                 // if there is no marker on a square...
                 if (this.marker === '') {
 
+                    // Uses global event bus to emit this method
                     // adds a value to a square
                     Event.$emit('placeMarker', this.number)
 
@@ -47,7 +48,6 @@
     .square {
         height: 100px;
         width: 100px;
-        border: 4px black;
         font-size: 48px;
         background: #eae7dc
     }

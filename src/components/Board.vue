@@ -27,7 +27,7 @@
 
     export default {
 
-        // props
+        // Declare props
         props: ['squares'],
 
         // Register child components
@@ -38,6 +38,8 @@
         // Stateless
         data() {
             return {
+
+                // moved board state upstream
 
             }
         }

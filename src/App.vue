@@ -6,16 +6,17 @@
       </div>
       
       <p>Total Rounds Played: <span id='rounds-counter'> {{ rounds }}</span></p>
-      <!-- <p>Current Player: <span>{{ currentPlayer }}</span></p> -->
+      <!-- <p>Next Move: <span>{{ currentPlayer }}</span></p> -->
       
       <!-- Render Board component -->
       <Board :squares='squares'></Board>
 
       <div class='score-info'>
-        <div></div>
-        <p>'X' Wins: <span id='p1-wins'>{{ xWins }}</span></p>
-        <p>'O' Wins: <span id='p2-wins'>{{ oWins }}</span></p>
-        <p>Ties: <span id='tie-counter'>{{ tie }}</span></p>
+        <div class='wins'>
+            <p>'X' Wins: <span id='p1-wins'>{{ xWins }}</span></p>
+            <p>'O' Wins: <span id='p2-wins'>{{ oWins }}</span></p>
+        </div>
+            <p>Ties: <span id='tie-counter'>{{ tie }}</span></p>
       </div>
 
       <button id='start-over' @click='startOver'>Start Over</button>
@@ -40,6 +41,7 @@
 
         // Initialize state
         data() {
+
             return {
 
                 squares: {
@@ -76,9 +78,6 @@
                 oWins: 0,
                 tie: 0,
 
-                // Total games played
-                gamesPlayed: 0,
-
                 // Initialize Player 1 to 'X'
                 currentPlayer: 'X',
             }
@@ -107,7 +106,7 @@
 
             // Reset Round
             resetRound() {
-                Event.$on(console.log('Reset Game'));
+                Event.$on(console.log('Reset Round'));
 
                 // Resets player1 value to 'X'
                 this.currentPlayer = 'X';
@@ -126,7 +125,7 @@
                 }
             },
 
-            // Resets Score Counters
+            // 'Start Over' button - resets score counters and board
             startOver() {
                 this.rounds = 0;
                 this.xWins = 0;
@@ -139,15 +138,17 @@
             incrementWin(currentPlayer) {
                 if (currentPlayer === 'X') {
                     this.xWins++;
-                } else if (currentPlayer = 'O') {
-                    this.oWins++
+                } else if (currentPlayer === 'O') {
+                    this.oWins++;
                 }
             },
 
             // Alerts user of Win
             alertWin(currentPlayer) {
                 setTimeout(() => {
-                    alert(`${currentPlayer} WINS!`)
+
+                    // Alert
+                    alert(`${currentPlayer} WINS!`);
 
                     // Increase Win Counter
                     this.incrementWin(currentPlayer);
@@ -161,10 +162,56 @@
                 }, 50);
             },
 
+            // Confirmed Win
+            didWin(currentPlayer) {
+
+                // Initialize 'won' to false
+                var won = false;
+
+                // Loops through array of winning conditions
+                for (let i = 0; i < this.winningConditions.length; i++) {
+
+                    // grab index of each winning condition array
+                    var index1 = this.winningConditions[i][0]; //1 
+                    var index2 = this.winningConditions[i][1]; //2
+                    var index3 = this.winningConditions[i][2]; //3
+
+                    // 
+                    var winningSpot1 = this.squares[index1] // x or o
+                    var winningSpot2 = this.squares[index2] // x or o
+                    var winningSpot3 = this.squares[index3] // x or o
+
+                    // if 3 values meet a winning condition....
+                    if (currentPlayer === winningSpot1 && currentPlayer === winningSpot2 && currentPlayer === winningSpot3) {
+
+                        // then WIN!
+                        won = true;
+                    }
+                }
+
+                // false by default
+                return won;
+            },
+
             // Helper to check if the 'squares' object is full
             checkIfFull() {
 
+                // initialize full to true
                 var full = true;
+
+                // for (let i = 1; i < this.squares.length; i++) {
+                //     // If there are any empty squares...
+                //     if (this.squares[i] === '') {
+                //         // Squares is not full
+                //         full = false;
+                //     }
+                // }
+
+                // return _.map(this.squares, (entry, square) => {
+                //     if (index === '') {
+                //         full = false;
+                //     }
+                // });
 
                 // Refactor into a loop
                 if (this.squares[1] === '' ||
@@ -181,46 +228,15 @@
 
                 // true by default
                 return full
-            },
-
-            // Confirmed Win
-            didWin(currentPlayer) {
-
-                // Initialize 'won' to false
-                var won = false;
-
-                // Loops through array of winning conditions
-                for (let i = 0; i < this.winningConditions.length; i++) {
-
-                    // grab index of each winning condition array
-                    var index1 = this.winningConditions[i][0]; //1
-                    var index2 = this.winningConditions[i][1]; //2
-                    var index3 = this.winningConditions[i][2]; //3
-
-                    // push winning condition into squares object
-                    var winningSpot1 = this.squares[index1] // x or o
-                    var winningSpot2 = this.squares[index2] // x or o
-                    var winningSpot3 = this.squares[index3] // x or o
-
-                    // if 3 values meet a winning condition....
-                    if (currentPlayer === winningSpot1 && currentPlayer === winningSpot2 && currentPlayer === winningSpot3) {
-
-                        // then WIN!
-                        won = true;
-                    }
-                }
-
-                // false by default
-                return won;
             }
         },
 
-        // Watcher function
+        // created() Lifecycle Hook
         created() {
-            Event.$on('placeMarker', (square) => {
+            Event.$on('placeMarker', (marker) => {
 
-                // push X or O to squares array
-                this.squares[square] = this.currentPlayer;
+                // push X or O to squares object
+                this.squares[marker] = this.currentPlayer;
 
                 // check for a win
                 if (this.didWin(this.currentPlayer)) {
@@ -264,13 +280,11 @@
         background-color: #d8c3a5;
         text-align: center;
         margin: 10px;
-    }
-    
-    p {
         font-size: 24px;
     }
     
     h2 {
+        /* font-family: 'Indie Flower'; */
         font-weight: bold;
         font-size: 48px;
     }
@@ -289,5 +303,11 @@
     span {
         color: #e98074;
         font-weight: bold;
+    }
+    
+    .wins p {
+        margin: 20px 20px;
+        text-align: center;
+        display: inline-block;
     }
 </style>
